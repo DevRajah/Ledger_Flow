@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PaymentProvider {
+  PAYSTACK
+  STRIPE
+  PAYPAL
+}
+
+enum PaymentEventStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  DUPLICATE
+}
+
+model PaymentEvent {
+  id              String             @id @default(uuid())
+  provider        PaymentProvider
+  providerEventId String
+  transactionRef  String
+  amount          Int
+  currency        String             @default("GBP")
+  customerEmail   String?
+  status          PaymentEventStatus @default(RECEIVED)
+  rawPayload      Json
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@unique([provider, providerEventId])
+  @@index([transactionRef])
+}
