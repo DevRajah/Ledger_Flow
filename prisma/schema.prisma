@@ -36,3 +36,17 @@ model PaymentEvent {
   @@unique([provider, providerEventId])
   @@index([transactionRef])
 }
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  action     String
+  entityType String
+  entityId   String?
+  actor      String?
+  metadata   Json?
+
+  createdAt  DateTime @default(now())
+
+  @@index([entityType])
+  @@index([action])
+}

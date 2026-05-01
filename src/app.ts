@@ -3,6 +3,9 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import testRoutes from "./routes/test.routes";
+import webhookRoutes from "./routes/webhook.routes";
+import paymentEventRoutes from "./routes/payment-event.routes";
+import auditRoutes from "./routes/audit.routes";
 
 // Create the Express app
 const app = express();
@@ -30,5 +33,15 @@ app.get("/health", (req, res) => {
 
 // Use the test routes
 app.use("/api/test", testRoutes);
+
+// Use the webhook routes
+app.use("/api/webhooks", webhookRoutes);
+
+// Use the payment event routes
+app.use("/api/payment-events", paymentEventRoutes);
+
+// Use the audit routes
+app.use("/api/audit-logs", auditRoutes);
+
 
 export default app;
