@@ -19,6 +19,11 @@ enum PaymentEventStatus {
   DUPLICATE
 }
 
+enum LedgerEntryType {
+  CREDIT
+  DEBIT
+}
+
 model PaymentEvent {
   id              String             @id @default(uuid())
   provider        PaymentProvider
@@ -32,6 +37,8 @@ model PaymentEvent {
 
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
+
+  ledgerEntries   LedgerEntry[]
 
   @@unique([provider, providerEventId])
   @@index([transactionRef])
@@ -49,4 +56,21 @@ model AuditLog {
 
   @@index([entityType])
   @@index([action])
+}
+
+model LedgerEntry {
+  id             String          @id @default(uuid())
+  paymentEventId String
+  entryType      LedgerEntryType
+  account        String
+  amount         Int
+  currency       String          @default("GBP")
+  description    String
+
+  createdAt      DateTime        @default(now())
+
+  paymentEvent   PaymentEvent    @relation(fields: [paymentEventId], references: [id])
+
+  @@index([paymentEventId])
+  @@index([account])
 }
