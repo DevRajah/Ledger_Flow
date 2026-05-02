@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import { createAuditLog } from "../services/audit.service";
-import { createLedgerEntriesForPayment } from "../services/ledger.service";
+//import { createLedgerEntriesForPayment } from "../services/ledger.service";
+import { addPaymentEventToQueue } from "../services/payment-queue.service";
+
 
 // This receives fake Paystack webhook events from Postman.
 export const receivePaystackWebhook = async (req: Request, res: Response) => {
@@ -63,7 +65,16 @@ export const receivePaystackWebhook = async (req: Request, res: Response) => {
       },
     });
     // Automatically create double-entry ledger records after saving the webhook.
-const ledgerResult = await createLedgerEntriesForPayment(paymentEvent.id);
+//const ledgerResult = await createLedgerEntriesForPayment(paymentEvent.id);
+
+// Instead of creating ledger entries inside the webhook request,
+// we add the event to a background queue.
+//
+// Why this is better:
+// Payment providers expect webhook endpoints to respond quickly.
+// Heavy work should happen in the background.
+const job = await addPaymentEventToQueue(paymentEvent.id);
+
     // Record system audit log.
     await createAuditLog({
       action: "PAYSTACK_WEBHOOK_RECEIVED",
@@ -80,7 +91,10 @@ const ledgerResult = await createLedgerEntriesForPayment(paymentEvent.id);
     return res.status(201).json({
       message: "Paystack webhook received successfully",
       paymentEvent,
-      ledgerResult,
+       queue: {
+    jobId: job.id,
+    status: "QUEUED",
+  },
     });
   } catch (error) {
     console.error("Webhook error:", error);

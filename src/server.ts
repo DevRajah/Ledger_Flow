@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import app from "./app";
+import "./workers/payment.worker";
 
 // Load .env variables
 dotenv.config();

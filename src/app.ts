@@ -9,6 +9,10 @@ import auditRoutes from "./routes/audit.routes";
 import ledgerRoutes from "./routes/ledger.routes";
 import settlementRoutes from "./routes/settlement.routes";
 import reconciliationRoutes from "./routes/reconciliation.routes";
+import queueRoutes from "./routes/queue.routes";
+import paymentReprocessRoutes from "./routes/payment-reprocess.routes";
+import queueDebugRoutes from "./routes/queue-debug.routes";
+
 // Create the Express app
 const app = express();
 
@@ -53,5 +57,14 @@ app.use("/api/settlements", settlementRoutes);
 
 // Use the reconciliation routes
 app.use("/api/reconciliation", reconciliationRoutes);
+
+// Use the queue routes
+app.use("/api/queues", queueRoutes);
+
+// Use the payment reprocess routes
+app.use("/api/payments", paymentReprocessRoutes);
+
+// Use the queue debug routes
+app.use("/api/queues", queueDebugRoutes);
 
 export default app;

@@ -14,9 +14,10 @@ enum PaymentProvider {
 
 enum PaymentEventStatus {
   RECEIVED
+  QUEUED
+  PROCESSING
   PROCESSED
   FAILED
-  DUPLICATE
 }
 
 enum LedgerEntryType {
