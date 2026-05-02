@@ -1,12 +1,27 @@
 import { Router } from "express";
 import {
+  getReconciliationReport,
   getReconciliationSummary,
+  reconcileAllPending,
   reconcileOneSettlement,
 } from "../controllers/reconciliation.controller";
 
 const router = Router();
 
-router.post("/:settlementId", reconcileOneSettlement);
+// This gives a short count summary.
+// Example: pending=2, matched=4, mismatched=1
 router.get("/summary", getReconciliationSummary);
+
+// This gives a deeper report with totals and issue records.
+// Useful for dashboard/reporting.
+router.get("/report", getReconciliationReport);
+
+// This reconciles all settlements that are still PENDING.
+// Useful after bulk CSV-style import.
+router.post("/run-pending", reconcileAllPending);
+
+// This reconciles one settlement by its ID.
+// Keep this LAST so it does not clash with /summary or /report.
+router.post("/:settlementId", reconcileOneSettlement);
 
 export default router;

@@ -126,3 +126,38 @@ export const reconcileSettlementRecord = async (settlementId: string) => {
 
   return matchedSettlement;
 };
+
+// This function finds every settlement that is still PENDING
+// and runs reconciliation on each one automatically.
+//
+// Simple meaning:
+// Instead of reconciling settlements one-by-one manually,
+// this allows the backend to process all waiting settlements in bulk.
+export const reconcileAllPendingSettlements = async () => {
+  const pendingSettlements = await prisma.settlementRecord.findMany({
+    where: {
+      reconciliationStatus: "PENDING",
+    },
+  });
+
+  const results = [];
+
+  for (const settlement of pendingSettlements) {
+    const reconciled = await reconcileSettlementRecord(settlement.id);
+
+    results.push(reconciled);
+  }
+
+  await createAuditLog({
+    action: "BULK_RECONCILIATION_COMPLETED",
+    entityType: "SettlementRecord",
+    metadata: {
+      totalProcessed: results.length,
+    },
+  });
+
+  return {
+    totalProcessed: results.length,
+    results,
+  };
+};
