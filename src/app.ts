@@ -12,6 +12,10 @@ import reconciliationRoutes from "./routes/reconciliation.routes";
 import queueRoutes from "./routes/queue.routes";
 import paymentReprocessRoutes from "./routes/payment-reprocess.routes";
 import queueDebugRoutes from "./routes/queue-debug.routes";
+import metricsRoutes from "./routes/metrics.routes";
+import { apiRateLimiter } from "./middlewares/rateLimiter";
+import apiKeyRoutes from "./routes/apiKey.routes";
+
 
 // Create the Express app
 const app = express();
@@ -66,5 +70,15 @@ app.use("/api/payments", paymentReprocessRoutes);
 
 // Use the queue debug routes
 app.use("/api/queues", queueDebugRoutes);
+
+// Use the metrics routes
+app.use("/api/metrics", metricsRoutes);
+
+// Apply rate limiting to all API routes
+app.use("/api/", apiRateLimiter);
+
+// Use the API key management routes
+app.use("/api/api-keys", apiKeyRoutes);
+
 
 export default app;
