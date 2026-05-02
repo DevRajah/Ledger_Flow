@@ -24,6 +24,14 @@ enum LedgerEntryType {
   DEBIT
 }
 
+enum ReconciliationStatus {
+  PENDING
+  MATCHED
+  MISMATCHED
+  MISSING_IN_PROVIDER
+  MISSING_IN_LEDGER
+}
+
 model PaymentEvent {
   id              String             @id @default(uuid())
   provider        PaymentProvider
@@ -73,4 +81,22 @@ model LedgerEntry {
 
   @@index([paymentEventId])
   @@index([account])
+}
+
+model SettlementRecord {
+  id                    String               @id @default(uuid())
+  provider              PaymentProvider
+  providerTransactionId String
+  transactionRef         String
+  amount                Int
+  currency              String               @default("GBP")
+  settledAt             DateTime
+  reconciliationStatus  ReconciliationStatus @default(PENDING)
+  mismatchReason        String?
+
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  @@index([transactionRef])
+  @@unique([provider, providerTransactionId])
 }

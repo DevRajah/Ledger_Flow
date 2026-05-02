@@ -7,7 +7,8 @@ import webhookRoutes from "./routes/webhook.routes";
 import paymentEventRoutes from "./routes/payment-event.routes";
 import auditRoutes from "./routes/audit.routes";
 import ledgerRoutes from "./routes/ledger.routes";
-
+import settlementRoutes from "./routes/settlement.routes";
+import reconciliationRoutes from "./routes/reconciliation.routes";
 // Create the Express app
 const app = express();
 
@@ -47,5 +48,10 @@ app.use("/api/audit-logs", auditRoutes);
 // Use the ledger routes
 app.use("/api/ledger", ledgerRoutes);
 
+// Use the settlement routes
+app.use("/api/settlements", settlementRoutes);
+
+// Use the reconciliation routes
+app.use("/api/reconciliation", reconciliationRoutes);
 
 export default app;

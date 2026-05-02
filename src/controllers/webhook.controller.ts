@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import { createAuditLog } from "../services/audit.service";
+import { createLedgerEntriesForPayment } from "../services/ledger.service";
 
 // This receives fake Paystack webhook events from Postman.
 export const receivePaystackWebhook = async (req: Request, res: Response) => {
@@ -61,7 +62,8 @@ export const receivePaystackWebhook = async (req: Request, res: Response) => {
         rawPayload: payload,
       },
     });
-
+    // Automatically create double-entry ledger records after saving the webhook.
+const ledgerResult = await createLedgerEntriesForPayment(paymentEvent.id);
     // Record system audit log.
     await createAuditLog({
       action: "PAYSTACK_WEBHOOK_RECEIVED",
@@ -78,6 +80,7 @@ export const receivePaystackWebhook = async (req: Request, res: Response) => {
     return res.status(201).json({
       message: "Paystack webhook received successfully",
       paymentEvent,
+      ledgerResult,
     });
   } catch (error) {
     console.error("Webhook error:", error);

@@ -6,7 +6,7 @@ export const processPaymentEventToLedger = async (req: Request, res: Response) =
   try {
     const { paymentEventId } = req.params;
 
-    const result = await createLedgerEntriesForPayment(paymentEventId);
+    const result = await createLedgerEntriesForPayment(paymentEventId as string);
 
     return res.status(201).json({
       message: "Ledger entries processed successfully",
