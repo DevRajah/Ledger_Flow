@@ -4,11 +4,17 @@ import { getPaymentQueueStats } from "../controllers/queue.controller";
 const router = Router();
 
 // GET /api/queues/metrics
-// Frontend-friendly queue metrics endpoint.
+//
+// What this endpoint does:
+// Gives frontend queue dashboard data.
+//
+// It includes:
+// - live BullMQ counts
+// - historical processed/failed totals
+// - last processed timestamp
 router.get("/metrics", getPaymentQueueStats);
 
-// GET /api/queues/payment/stats
-// Shows how many payment jobs are waiting, active, completed, failed, or delayed.
+// Old route kept for Postman/backward compatibility.
 router.get("/payment/stats", getPaymentQueueStats);
 
 export default router;
