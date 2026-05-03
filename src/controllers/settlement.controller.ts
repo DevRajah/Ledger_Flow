@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import { createSettlementRecord } from "../services/settlement.service";
-
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 // This controller manages settlement records. It allows adding new settlement records and fetching existing ones with optional filters.
 export const addSettlementRecord = async (req: Request, res: Response) => {
@@ -16,10 +16,7 @@ export const addSettlementRecord = async (req: Request, res: Response) => {
     } = req.body;
 
     if (!provider || !providerTransactionId || !transactionRef || !amount) {
-      return res.status(400).json({
-        message:
-          "provider, providerTransactionId, transactionRef, and amount are required",
-      });
+      return errorResponse(res, "provider, providerTransactionId, transactionRef, and amount are required");
     }
 
     const result = await createSettlementRecord({
@@ -31,12 +28,9 @@ export const addSettlementRecord = async (req: Request, res: Response) => {
       settledAt,
     });
 
-    return res.status(201).json(result);
+    return successResponse(res, "Settlement record created successfully", result, 201);
   } catch (error: any) {
-    return res.status(500).json({
-      message: "Failed to create settlement record",
-      error: error.message,
-    });
+    return errorResponse(res, "Failed to create settlement record", error);
   }
 };
 
@@ -87,36 +81,49 @@ export const bulkImportSettlements = async (req: Request, res: Response) => {
   try {
     const settlements = req.body.settlements;
 
-    if (!Array.isArray(settlements) || settlements.length === 0) {
-      return res.status(400).json({
-        message: "settlements must be a non-empty array",
-      });
-    }
-
+   if (!Array.isArray(settlements) || settlements.length === 0) {
+  return errorResponse(
+    res,
+    "Settlement import failed",
+    "settlements must be a non-empty array",
+    400
+  );
+}
     const results = [];
 
-    for (const settlement of settlements) {
-      const result = await createSettlementRecord({
-        provider: settlement.provider,
-        providerTransactionId: settlement.providerTransactionId,
-        transactionRef: settlement.transactionRef,
-        amount: settlement.amount,
-        currency: settlement.currency,
-        settledAt: settlement.settledAt,
-      });
+for (const settlement of settlements) {
+  if (
+    !settlement.provider ||
+    !settlement.providerTransactionId ||
+    !settlement.transactionRef ||
+    !settlement.amount
+  ) {
+    return errorResponse(
+      res,
+      "Settlement import failed",
+      "Each settlement must include provider, providerTransactionId, transactionRef, and amount",
+      400
+    );
+  }
 
-      results.push(result);
-    }
+  const result = await createSettlementRecord({
+    provider: settlement.provider,
+    providerTransactionId: settlement.providerTransactionId,
+    transactionRef: settlement.transactionRef,
+    amount: settlement.amount,
+    currency: settlement.currency,
+    settledAt: settlement.settledAt,
+  });
 
-    return res.status(201).json({
-      message: "Bulk settlement import completed",
+  results.push(result);
+}
+
+    return successResponse(res, "Bulk settlement import completed", {
       totalSubmitted: settlements.length,
       results,
-    });
+    }, 201);
+   
   } catch (error: any) {
-    return res.status(500).json({
-      message: "Failed to bulk import settlements",
-      error: error.message,
-    });
+    return errorResponse(res, "Failed to bulk import settlements", error);
   }
 };

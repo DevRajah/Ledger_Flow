@@ -16,10 +16,16 @@ router.get("/summary", getReconciliationSummary);
 // Useful for dashboard/reporting.
 router.get("/report", getReconciliationReport);
 
+// POST /api/reconciliation/run
+// Frontend-friendly route to reconcile all pending settlements.
+router.post("/run", reconcileAllPending);
+
 // This reconciles all settlements that are still PENDING.
 // Useful after bulk CSV-style import.
 router.post("/run-pending", reconcileAllPending);
 
+
+// POST /api/reconciliation/:settlementId
 // This reconciles one settlement by its ID.
 // Keep this LAST so it does not clash with /summary or /report.
 router.post("/:settlementId", reconcileOneSettlement);

@@ -5,6 +5,8 @@ import {
   reconcileSettlementRecord,
   reconcileAllPendingSettlements,
 } from "../services/reconciliation.service";
+import { successResponse, errorResponse } from "../utils/apiResponse";
+import { error } from "console";
 
 // This controller handles reconciliation of settlement records against ledger entries.
 // It provides endpoints to reconcile individual settlements, get reconciliation summaries, and generate detailed reports.
@@ -14,17 +16,21 @@ export const reconcileOneSettlement = async (req: Request, res: Response) => {
 
     const result = await reconcileSettlementRecord(settlementId as string);
 
-    return res.status(200).json({
-      message: "Reconciliation completed",
-      result,
-    });
+    return successResponse(res, "Reconciliation completed", { result });
   } catch (error: any) {
-    return res.status(500).json({
-      message: "Failed to reconcile settlement",
-      error: error.message,
-    });
+    return errorResponse(res, "Failed to reconcile settlement", error);
   }
 };
+// This endpoint provides a quick summary of the reconciliation status of all settlements.
+// export const getReconciliationSummary = async (req: Request, res: Response) => {
+//   try {
+//     const pending = await prisma.settlementRecord.count({
+//       where: { reconciliationStatus: "PENDING" },
+//       message: "Failed to reconcile settlement",
+//       error: error.message,
+//     });
+//   }
+// };
 // This endpoint provides a quick summary of the reconciliation status of all settlements.
 export const getReconciliationSummary = async (req: Request, res: Response) => {
   try {

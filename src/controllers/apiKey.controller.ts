@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import crypto from "crypto";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 // This endpoint creates a new API key for a client.
 export const createApiKey = async (req: Request, res: Response) => {
@@ -16,13 +17,8 @@ export const createApiKey = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(201).json({
-      message: "API key created",
-      apiKey,
-    });
+    return successResponse(res, "API key created", { apiKey });
   } catch (error) {
-    return res.status(500).json({
-      message: "Failed to create API key",
-    });
+    return errorResponse(res, "Failed to create API key", error);
   }
 };

@@ -1,21 +1,44 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
+// GET /api/payment-events
+// Fetches payment events and supports filtering.
+//
+// Future me:
+// The frontend can pass status, provider, or transactionRef as query params.
+// Example:
+// /api/payment-events?status=PROCESSED
+// /api/payment-events?provider=PAYSTACK
+// /api/payment-events?transactionRef=DEMO
 export const getPaymentEvents = async (req: Request, res: Response) => {
   try {
+    const { status, provider, transactionRef } = req.query;
+
     const events = await prisma.paymentEvent.findMany({
+      where: {
+        status: status ? (status as any) : undefined,
+        provider: provider ? (provider as any) : undefined,
+
+        // contains allows partial search.
+        // Example: transactionRef=DEMO can match DEMO-TXN-123.
+        transactionRef: transactionRef
+          ? {
+              contains: String(transactionRef),
+              mode: "insensitive",
+            }
+          : undefined,
+      },
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        ledgerEntries: true,
+      },
     });
 
-    return res.status(200).json({
-      total: events.length,
-      events,
-    });
+    return successResponse(res, "Payment events fetched successfully", events);
   } catch (error) {
-    return res.status(500).json({
-      message: "Failed to fetch payment events",
-    });
+    return errorResponse(res, "Failed to fetch payment events", error);
   }
 };

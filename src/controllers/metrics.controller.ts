@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 // This endpoint gives system-wide metrics.
 //
@@ -28,17 +29,15 @@ export const getSystemMetrics = async (req: Request, res: Response) => {
     const successRate =
       totalEvents === 0 ? 0 : (processed / totalEvents) * 100;
 
-    return res.status(200).json({
-      totalEvents,
-      processed,
-      failed,
-      queued,
-      processing,
-      successRate: Number(successRate.toFixed(2)),
-    });
+ return successResponse(res, "System metrics fetched successfully", {
+  totalEvents,
+  processed,
+  failed,
+  queued,
+  processing,
+  successRate: Number(successRate.toFixed(2)),
+});
   } catch (error) {
-    return res.status(500).json({
-      message: "Failed to fetch system metrics",
-    });
+    return errorResponse(res, "Failed to fetch system metrics", error);
   }
 };

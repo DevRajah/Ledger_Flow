@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import { createLedgerEntriesForPayment } from "../services/ledger.service";
+import { successResponse, errorResponse } from "../utils/apiResponse";
+
 
 export const processPaymentEventToLedger = async (req: Request, res: Response) => {
   try {
@@ -13,10 +15,7 @@ export const processPaymentEventToLedger = async (req: Request, res: Response) =
       result,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      message: "Failed to process payment event into ledger",
-      error: error.message,
-    });
+    return errorResponse(res, "Failed to process payment event into ledger", error);
   }
 };
 
@@ -31,14 +30,30 @@ export const getLedgerEntries = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json({
-      total: entries.length,
-      entries,
-    });
+    // Future me:
+    // The frontend needs transactionRef directly.
+    // We flatten it here so React does not have to dig into paymentEvent every time.
+    const mappedEntries = entries.map((entry) => ({
+      id: entry.id,
+      paymentEventId: entry.paymentEventId,
+      transactionRef: entry.paymentEvent?.transactionRef || null,
+      provider: entry.paymentEvent?.provider || null,
+      entryType: entry.entryType,
+      account: entry.account,
+      amount: entry.amount,
+      currency: entry.currency,
+      description: entry.description,
+      createdAt: entry.createdAt,
+      paymentEvent: entry.paymentEvent,
+    }));
+
+    return successResponse(
+      res,
+      "Ledger entries fetched successfully",
+      mappedEntries
+    );
   } catch (error) {
-    return res.status(500).json({
-      message: "Failed to fetch ledger entries",
-    });
+    return errorResponse(res, "Failed to fetch ledger entries", error);
   }
 };
 

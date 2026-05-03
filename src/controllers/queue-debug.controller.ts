@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { paymentQueue } from "../queues/payment.queue";
-
+import { successResponse, errorResponse } from "../utils/apiResponse";
 // Shows failed jobs in the queue.
 export const getFailedJobs = async (req: Request, res: Response) => {
   try {
@@ -13,14 +13,11 @@ export const getFailedJobs = async (req: Request, res: Response) => {
       attemptsMade: job.attemptsMade,
     }));
 
-    return res.status(200).json({
+    return successResponse(res, "Failed jobs fetched successfully", {
       total: formatted.length,
       jobs: formatted,
     });
-  } catch (error: any) {
-    return res.status(500).json({
-      message: "Failed to fetch failed jobs",
-      error: error.message,
-    });
+} catch (error) {
+    return errorResponse(res, "Failed to fetch failed jobs", error);
   }
 };
