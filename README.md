@@ -107,6 +107,28 @@ Failure path:
 PROCESSING → FAILED
 ```
 
+## Load Testing
+
+LedgerFlow was load-tested using a custom simulation script that generated 5,000+ payment reconciliation events through the full processing pipeline.
+
+### Results
+
+- 5,000+ simulated payment events processed
+- 99.98% processing success rate
+- Redis + BullMQ asynchronous queue processing
+- PostgreSQL persistence and ledger creation
+- Real-time queue metrics and audit logging
+
+Example queue metrics:
+
+```json
+{
+  "totalPaymentEvents": 6598,
+  "totalProcessedJobs": 6597,
+  "successRate": 99.98
+}
+```
+
 ---
 
 ## Main Endpoints

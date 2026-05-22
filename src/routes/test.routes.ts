@@ -1,4 +1,5 @@
 import { Router } from "express";
+import crypto from "crypto";
 import prisma from "../config/prisma";
 import { addPaymentEventToQueue } from "../services/payment-queue.service";
 import { successResponse, errorResponse } from "../utils/apiResponse";
@@ -37,13 +38,19 @@ router.post("/simulate-payment", async (req, res) => {
       provider = "PAYSTACK",
     } = req.body;
 
-    const timestamp = Date.now();
+    // Future me:
+    // Date.now() alone is not safe during load testing because
+    // many requests can happen within the same millisecond.
+    //
+    // So we combine timestamp + random UUID
+    // to guarantee unique transaction references and provider event IDs.
+    const uniqueId = `${Date.now()}-${crypto.randomUUID()}`;
 
     const paymentEvent = await prisma.paymentEvent.create({
       data: {
         provider,
-        providerEventId: `demo_evt_${timestamp}`,
-        transactionRef: `DEMO-TXN-${timestamp}`,
+        providerEventId: `demo_evt_${uniqueId}`,
+        transactionRef: `DEMO-TXN-${uniqueId}`,
         amount: Number(amount),
         currency,
         customerEmail,
