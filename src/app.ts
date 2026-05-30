@@ -17,19 +17,19 @@ import { apiRateLimiter } from "./middlewares/rateLimiter";
 import apiKeyRoutes from "./routes/apiKey.routes";
 
 
-// Create the Express app
+
 const app = express();
 
-// Security middleware
+
 app.use(helmet());
 
-// Allow frontend/client apps to call our backend
+
 app.use(cors());
 
-// Allow backend to receive JSON data
+
 app.use(express.json());
 
-// Log requests in the terminal during development
+
 app.use(morgan("dev"));
 
 // Simple health route to confirm server is alive
@@ -41,43 +41,43 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Use the test routes
+
 app.use("/api/test", testRoutes);
 
-// Use the webhook routes
+
 app.use("/api/webhooks", webhookRoutes);
 
-// Use the payment event routes
+
 app.use("/api/payment-events", paymentEventRoutes);
 
-// Use the audit routes
+
 app.use("/api/audit-logs", auditRoutes);
 
-// Use the ledger routes
+
 app.use("/api/ledger", ledgerRoutes);
 
-// Use the settlement routes
+
 app.use("/api/settlements", settlementRoutes);
 
-// Use the reconciliation routes
+
 app.use("/api/reconciliation", reconciliationRoutes);
 
-// Use the queue routes
+
 app.use("/api/queues", queueRoutes);
 
-// Use the payment reprocess routes
+
 app.use("/api/payments", paymentReprocessRoutes);
 
-// Use the queue debug routes
+
 app.use("/api/queues", queueDebugRoutes);
 
-// Use the metrics routes
+
 app.use("/api/metrics", metricsRoutes);
 
-// Apply rate limiting to all API routes
+
 app.use("/api/", apiRateLimiter);
 
-// Use the API key management routes
+
 app.use("/api/api-keys", apiKeyRoutes);
 
 
