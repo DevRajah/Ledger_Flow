@@ -2,15 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../config/prisma";
 import { successResponse, errorResponse } from "../utils/apiResponse";
 
-// GET /api/payment-events
+
 // Fetches payment events and supports filtering.
-//
-// Future me:
-// The frontend can pass status, provider, or transactionRef as query params.
-// Example:
-// /api/payment-events?status=PROCESSED
-// /api/payment-events?provider=PAYSTACK
-// /api/payment-events?transactionRef=DEMO
 export const getPaymentEvents = async (req: Request, res: Response) => {
   try {
     const { status, provider, transactionRef } = req.query;

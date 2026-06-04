@@ -3,9 +3,6 @@ import prisma from "../config/prisma";
 import { successResponse, errorResponse } from "../utils/apiResponse";
 
 // This endpoint gives system-wide metrics.
-//
-// Simple meaning for future me:
-// It shows how well the system is performing.
 export const getSystemMetrics = async (req: Request, res: Response) => {
   try {
     const totalEvents = await prisma.paymentEvent.count();

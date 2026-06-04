@@ -3,7 +3,6 @@ import prisma from "../config/prisma";
 import {successResponse, errorResponse } from "../utils/apiResponse";
 
 
-// GET /api/audit-logs
 // Returns system audit logs for debugging and traceability.
 export const getAuditLogs = async (req: Request, res: Response) => {
   try {
