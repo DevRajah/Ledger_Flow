@@ -74,7 +74,7 @@ LedgerFlow demonstrates how these problems can be solved using an event-driven a
 # Architecture
 
 <p align="center">
-<img src="./assets/social-preview.jpg" width="100%">
+<img src="./assets/ledgerFlow architecture.jpg" width="100%">
 </p>
 
 The complete architecture documentation is available here:
