@@ -1,125 +1,201 @@
-# LedgerFlow
+<p align="center">
+  <img src="./assets/social-preview.jpg" alt="LedgerFlow Banner" width="100%" />
+</p>
 
-**LedgerFlow** is an event-driven payment reconciliation and audit ledger system built with Node.js, Express, PostgreSQL, Prisma, Redis, BullMQ, and TypeScript.
+<h1 align="center">LedgerFlow</h1>
 
-It simulates how fintech platforms receive payment provider webhooks, protect against duplicate events, process payments asynchronously, create double-entry ledger records, and reconcile internal transactions against provider settlement records.
+<p align="center">
+  <strong>Event-driven payment reconciliation and audit ledger infrastructure.</strong>
+</p>
 
----
+<p align="center">
+Build reliable payment pipelines • Prevent duplicate processing • Generate immutable ledger entries • Reconcile settlements • Monitor operational health
+</p>
 
-## Why This Project Exists
+<p align="center">
 
-Payment systems are not just about accepting money.
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![BullMQ](https://img.shields.io/badge/BullMQ-EA580C?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-Real backend systems must also handle:
-
-- Duplicate webhooks
-- Failed background jobs
-- Payment status tracking
-- Financial ledger accuracy
-- Provider settlement mismatches
-- Audit trails
-- Reconciliation reports
-- Operational metrics
-
-LedgerFlow was built to demonstrate these backend engineering concerns in a realistic fintech-style architecture.
-
----
-
-## Architecture
-
-See the full system design here:
-
-[View Architecture](docs/ARCHITECTURE.md)
+</p>
 
 ---
 
-## Core Features
+# What is LedgerFlow?
 
-- Payment webhook ingestion
-- API key protected webhook endpoint
-- Idempotency protection
-- Redis + BullMQ background processing
-- Payment event state machine
-- Double-entry ledger creation
-- Provider settlement records
-- Bulk settlement import
-- Reconciliation engine
-- Reconciliation reports
-- Queue metrics
-- System metrics
-- Audit logs
-- Rate limiting
+LedgerFlow is an event-driven payment reconciliation platform built to demonstrate how modern financial systems safely process payment events at scale.
+
+Instead of simply accepting payments, LedgerFlow models the complete backend workflow behind a production payment system, including webhook ingestion, asynchronous processing, idempotency protection, double-entry ledger generation, settlement reconciliation, audit logging, and operational monitoring.
+
+It was designed as a backend engineering project focused on reliability, observability, and scalable architecture.
 
 ---
 
-## Tech Stack
+# Why LedgerFlow?
 
-| Area | Technology |
-|---|---|
+A successful payment response is only the beginning.
+
+Real financial systems must also answer questions like:
+
+- Was this webhook delivered twice?
+- Did the background worker fail?
+- Was the customer charged twice?
+- Does our ledger balance?
+- Did the provider settlement match our records?
+- Can every financial action be audited?
+- Can engineers monitor the health of the processing pipeline?
+
+LedgerFlow demonstrates how these problems can be solved using an event-driven architecture.
+
+---
+
+# Project Highlights
+
+- Event-driven payment processing
+- API key secured webhook endpoint
+- Idempotent payment handling
+- Redis + BullMQ background workers
+- Double-entry ledger implementation
+- Provider settlement import
+- Automated reconciliation engine
+- Queue metrics dashboard
+- Audit logging
+- Load tested with **5,000+ simulated payment events**
+- Achieved **99.98% processing success rate**
+
+---
+
+# Architecture
+
+<p align="center">
+<img src="./assets/social-preview.jpg" width="100%">
+</p>
+
+The complete architecture documentation is available here:
+
+**📄 [Architecture Documentation](docs/ARCHITECTURE.md)**
+
+---
+
+# Technology Stack
+
+| Layer | Technology |
+|--------|------------|
 | Runtime | Node.js |
 | Framework | Express.js |
 | Language | TypeScript |
-| Primary Database | PostgreSQL |
+| Database | PostgreSQL |
 | ORM | Prisma |
 | Queue | BullMQ |
 | Queue Store | Redis |
-| Security | API Keys, Rate Limiting, Helmet |
+| Security | API Keys, Helmet, Rate Limiting |
 | Logging | Morgan |
-| Container Support | Docker for Redis |
+| Containers | Docker |
 
 ---
 
-## High-Level Flow
+# System Workflow
 
-```txt
+```text
 Payment Provider
-    ↓
+        │
+        ▼
 Webhook API
-    ↓
-API Key Auth + Rate Limiting
-    ↓
-Idempotency Check
-    ↓
-PaymentEvent saved in PostgreSQL
-    ↓
-BullMQ job added
-    ↓
-Worker creates double-entry ledger
-    ↓
-Settlement records imported
-    ↓
-Reconciliation engine detects matches/mismatches
-    ↓
-Audit logs + reports + metrics
+        │
+        ▼
+API Key Authentication
+        │
+        ▼
+Rate Limiting
+        │
+        ▼
+Idempotency Validation
+        │
+        ▼
+Payment Event Stored
+        │
+        ▼
+BullMQ Queue
+        │
+        ▼
+Background Worker
+        │
+        ├──────────────► Create Ledger Entries
+        │
+        ├──────────────► Update Payment Status
+        │
+        ├──────────────► Create Audit Log
+        │
+        ▼
+Settlement Import
+        │
+        ▼
+Reconciliation Engine
+        │
+        ▼
+Metrics Dashboard
 ```
 
 ---
 
-## Payment Event Lifecycle
+# Payment Lifecycle
 
-```txt
-RECEIVED → QUEUED → PROCESSING → PROCESSED
+```
+RECEIVED
+     │
+     ▼
+QUEUED
+     │
+     ▼
+PROCESSING
+     │
+     ├────────► FAILED
+     │
+     ▼
+PROCESSED
 ```
 
-Failure path:
+---
 
-```txt
-PROCESSING → FAILED
-```
+# Key Features
 
-## Load Testing
+- Payment webhook ingestion
+- API key authentication
+- Idempotency protection
+- Queue based asynchronous processing
+- Double-entry accounting
+- Settlement reconciliation
+- Audit logging
+- Queue monitoring
+- System metrics
+- Failure recovery
+- Rate limiting
+- Engineering observability
 
-LedgerFlow was load-tested using a custom simulation script that generated 5,000+ payment reconciliation events through the full processing pipeline.
+---
 
-### Results
+# Load Testing
 
-- 5,000+ simulated payment events processed
+LedgerFlow was stress-tested using a custom simulation script that pushed more than **5,000 payment events** through the complete processing pipeline.
+
+## Results
+
+- 5,000+ simulated payment events
 - 99.98% processing success rate
-- Redis + BullMQ asynchronous queue processing
-- PostgreSQL persistence and ledger creation
-- Real-time queue metrics and audit logging
+- Redis-backed asynchronous processing
+- PostgreSQL persistence
+- Ledger generation
+- Settlement reconciliation
+- Live queue metrics
+- Audit trail generation
 
-Example queue metrics:
+Example metrics:
 
 ```json
 {
@@ -131,313 +207,179 @@ Example queue metrics:
 
 ---
 
-## Main Endpoints
+# API Overview
 
-### Health Check
+<details>
 
-Checks whether the API is running.
+<summary><strong>View Main API Endpoints</strong></summary>
 
-```txt
+## Health
+
+```
 GET /health
 ```
 
----
+## Database Test
 
-### Database Test
-
-Checks whether Node.js can talk to PostgreSQL through Prisma.
-
-```txt
+```
 GET /api/test/db
 ```
 
----
+## API Keys
 
-### Create API Key
-
-Creates an API key for a simulated client/provider.
-
-```txt
+```
 POST /api/api-keys
 ```
 
-Body:
+## Paystack Webhook
 
-```json
-{
-  "name": "Test Client"
-}
 ```
-
----
-
-### Paystack Webhook
-
-Receives a fake Paystack payment webhook, saves the payment event, and queues it for background ledger processing.
-
-Requires header:
-
-```txt
-x-api-key: YOUR_API_KEY
-```
-
-```txt
 POST /api/webhooks/paystack
 ```
 
-Body:
+## Payment Events
 
-```json
-{
-  "eventId": "evt_paystack_001",
-  "transactionRef": "TXN-LEDGER-001",
-  "amount": 5000,
-  "currency": "GBP",
-  "customerEmail": "customer@example.com",
-  "status": "success"
-}
 ```
-
----
-
-### Get Payment Events
-
-Returns all payment events.
-
-```txt
 GET /api/payment-events
 ```
 
----
+## Ledger
 
-### Get Ledger Entries
-
-Returns all double-entry ledger records.
-
-```txt
+```
 GET /api/ledger
 ```
 
----
+## Ledger Summary
 
-### Get Ledger Summary
-
-Checks whether total credits and debits are balanced.
-
-```txt
+```
 GET /api/ledger/summary
 ```
 
----
+## Settlement Import
 
-### Create Settlement Record
-
-Creates one provider settlement record manually.
-
-```txt
+```
 POST /api/settlements
-```
 
-Body:
-
-```json
-{
-  "provider": "PAYSTACK",
-  "providerTransactionId": "settle_paystack_001",
-  "transactionRef": "TXN-LEDGER-001",
-  "amount": 5000,
-  "currency": "GBP",
-  "settledAt": "2026-05-01T10:00:00.000Z"
-}
-```
-
----
-
-### Bulk Settlement Import
-
-Simulates importing many provider settlement records from a CSV-style source.
-
-```txt
 POST /api/settlements/bulk
 ```
 
----
+## Reconciliation
 
-### Reconcile One Settlement
-
-Compares one settlement record against the internal ledger.
-
-```txt
+```
 POST /api/reconciliation/:settlementId
-```
 
----
-
-### Reconcile All Pending Settlements
-
-Runs reconciliation for all settlement records still marked as pending.
-
-```txt
 POST /api/reconciliation/run-pending
-```
 
----
-
-### Reconciliation Report
-
-Returns a dashboard-style reconciliation report.
-
-```txt
 GET /api/reconciliation/report
 ```
 
----
+## Queue Metrics
 
-### Queue Stats
-
-Shows BullMQ job counts.
-
-```txt
-GET /api/queues/payment/stats
 ```
+GET /api/queues/payment/stats
 
----
-
-### Failed Jobs
-
-Shows failed queue jobs for debugging.
-
-```txt
 GET /api/queues/payment/failed
 ```
 
----
+## Metrics
 
-### System Metrics
-
-Returns high-level system metrics including success rate.
-
-```txt
+```
 GET /api/metrics
 ```
 
----
+## Audit Logs
 
-### Audit Logs
-
-Returns system audit logs.
-
-```txt
+```
 GET /api/audit-logs
 ```
 
+</details>
+
 ---
 
-## Local Setup
-
-### 1. Install dependencies
+# Local Development
 
 ```bash
 npm install
 ```
 
----
-
-### 2. Start Redis with Docker
+Start Redis
 
 ```bash
 docker run --name ledgerflow-redis -p 6379:6379 -d redis
 ```
 
-If the container already exists:
-
-```bash
-docker start ledgerflow-redis
-```
-
----
-
-### 3. Configure environment variables
-
-Create `.env`:
-
-```env
-PORT=5700
-NODE_ENV=development
-
-DATABASE_URL="postgresql://postgres:12345@localhost:5432/ledgerflow"
-
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-```
-
----
-
-### 4. Run Prisma migration
+Run migrations
 
 ```bash
 npx prisma migrate dev
 ```
 
-Generate Prisma Client:
+Generate Prisma Client
 
 ```bash
 npx prisma generate
 ```
 
----
-
-### 5. Start development server
+Start development server
 
 ```bash
 npm run dev
 ```
 
-API runs on:
-
-```txt
-http://localhost:5700
-```
-
 ---
 
-## Example Test Flow
+# Engineering Concepts
 
-1. Create an API key
-2. Send a Paystack webhook using `x-api-key`
-3. Check payment events
-4. Check queue stats
-5. Check ledger entries
-6. Create settlement records
-7. Run reconciliation
-8. View reconciliation report
-9. View audit logs
-10. View system metrics
-
----
-
-## Engineering Concepts Demonstrated
-
-LedgerFlow demonstrates backend concepts expected in real production systems:
+LedgerFlow demonstrates production backend concepts including:
 
 - Event-driven architecture
-- Queue-based processing
+- Queue based processing
 - Idempotency
-- Double-entry accounting logic
+- Double-entry accounting
 - Database transactions
-- Reconciliation workflows
-- State machines
-- API key authentication
-- Rate limiting
+- Reconciliation
 - Audit logging
 - Operational metrics
+- Background workers
 - Failure recovery
-- Multi-step backend workflows
+- State machines
+- Distributed backend workflows
 
 ---
 
-## Portfolio Positioning
+# Roadmap
 
-This project demonstrates how financial backend systems can be designed to safely process payment events, prevent duplicate processing, maintain balanced ledger records, and detect settlement mismatches.
+- ✅ Payment webhooks
+- ✅ API key authentication
+- ✅ BullMQ workers
+- ✅ Redis queues
+- ✅ Double-entry ledger
+- ✅ Settlement reconciliation
+- ✅ Queue metrics
+- ✅ Audit logging
+- ✅ Load testing
 
-It is designed as a backend-heavy engineering project for demonstrating system design, reliability, and distributed processing skills.
+### Planned
+
+- ⏳ Stripe integration
+- ⏳ Flutterwave integration
+- ⏳ PayPal integration
+- ⏳ Event replay
+- ⏳ Dead-letter queue
+- ⏳ Multi-tenant organisations
+- ⏳ Grafana dashboards
+
+---
+
+# Contributing
+
+Contributions, suggestions, and improvements are welcome.
+
+If you'd like to improve LedgerFlow, feel free to open an issue or submit a pull request.
+
+---
+
+# License
+
+MIT License.
