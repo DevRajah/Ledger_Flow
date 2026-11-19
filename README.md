@@ -1,6 +1,6 @@
 <p align="center">
   <img src="./assets/social-preview.jpg" alt="LedgerFlow Banner" width="100%" />
-</p>
+</p> 
 
 <h1 align="center">LedgerFlow</h1>
 
